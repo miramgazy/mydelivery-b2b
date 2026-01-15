@@ -64,48 +64,31 @@ onMounted(async () => {
   alert('Инициализация приложения...')
   try {
     // 1. Инициализируем Telegram
-    alert('Шаг 1: Инфо Telegram...')
     telegramService.init()
     
-    // Проверяем что запущены в Telegram
     if (!telegramService.isInTelegram()) {
-      alert('Ошибка: Режим браузера, а не Telegram')
       isCheckingAccess.value = false
       return
     }
 
-    // Получаем Telegram ID
     const tgUser = telegramService.getUser()
     telegramId.value = tgUser?.id
-    alert(`Шаг 2: Ваш ID: ${tgUser?.id}`)
-
-    if (authStore.isAuthenticated) {
-      alert('Шаг 2.5: Восстанавливаем сессию...')
-      const currentUser = await authStore.fetchCurrentUser()
-      if (currentUser) {
-        alert('Успех: Сессия восстановлена!')
-        isCheckingAccess.value = false
-        if (router.currentRoute.value.path === '/login' || router.currentRoute.value.path === '/checking-access') {
-           router.push('/')
-        }
-        return
-      }
-    }
 
     // 2. Проверяем доступ
-    alert('Шаг 3: Запрос к API (checkAccess)...')
     await authStore.checkAccess()
-    alert(`Результат доступа: ${authStore.hasAccess ? 'РАЗРЕШЕНО' : 'ЗАПРЕЩЕНО'}`)
-
+    
     if (!authStore.hasAccess) {
       isCheckingAccess.value = false
       return
     }
 
-    // 3. Доступ есть - пытаемся войти
-    alert('Шаг 4: Попытка входа (login)...')
+    // 3. Доступ есть - входим
     const loginResult = await authStore.login()
-    alert(`Результат входа: ${loginResult.success ? 'УСПЕХ' : 'ОШИБКА'}`)
+    
+    if (loginResult.success) {
+      await authStore.fetchCurrentUser()
+      router.push('/')
+    }
 
     if (loginResult.success) {
       // Успешный вход - загружаем данные пользователя
