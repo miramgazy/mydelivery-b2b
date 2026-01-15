@@ -200,7 +200,8 @@ IIKO_API_BASE_URL = config('IIKO_API_BASE_URL', default='https://api-ru.iiko.ser
 # Security settings for production
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
-SECURE_SSL_REDIRECT = False
+USE_X_FORWARDED_PORT = True
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
 
 # Доверенные домены для CSRF (обязательно для работы за прокси)
 CSRF_TRUSTED_ORIGINS = [

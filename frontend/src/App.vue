@@ -61,6 +61,7 @@ const isInTelegram = computed(() => telegramService.isInTelegram())
 const isAdminPath = computed(() => router.currentRoute.value.path.startsWith('/admin'))
 
 onMounted(async () => {
+  alert('Инициализация приложения...')
   try {
     // 1. Инициализируем Telegram
     telegramService.init()
