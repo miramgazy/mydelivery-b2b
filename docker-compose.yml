@@ -8,8 +8,10 @@ services:
       - redis_data:/data
     restart: always
     networks:
-      - default
-      - coolify
+      default:
+        aliases:
+          - redis
+      coolify:
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
@@ -27,8 +29,11 @@ services:
       - tg-redis
     restart: always
     networks:
-      - default
-      - coolify
+      default:
+        aliases:
+          - backend
+      coolify:
+
 
   celery:
     build:
@@ -39,8 +44,9 @@ services:
       - tg-redis
     restart: always
     networks:
-      - default
-      - coolify
+      default:
+      coolify:
+
 
   celery-beat:
     build:
@@ -51,16 +57,20 @@ services:
       - tg-redis
     restart: always
     networks:
-      - default
-      - coolify
+      default:
+      coolify:
+
 
   frontend:
     build:
       context: ./frontend
     restart: always
     networks:
-      - default
-      - coolify
+      default:
+        aliases:
+          - frontend
+      coolify:
+
 
   nginx:
     build:
@@ -76,8 +86,9 @@ services:
       - frontend
     restart: always
     networks:
-      - default
-      - coolify
+      default:
+      coolify:
+
 
 volumes:
   redis_data:
