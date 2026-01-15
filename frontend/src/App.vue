@@ -146,7 +146,8 @@ onMounted(async () => {
     }
   } catch (error) {
     console.error('Initialization error:', error)
-    telegramService.showAlert('Ошибка при запуске приложения')
+    const errorMsg = error.message || 'Неизвестная ошибка'
+    telegramService.showAlert(`Ошибка при запуске приложения: ${errorMsg}. Проверьте соединение с интернетом или настройки API.`)
   } finally {
     isCheckingAccess.value = false
   }
