@@ -19,6 +19,7 @@ services:
   backend:
     build:
       context: ./backend
+    command: /app/docker-entrypoint.sh gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4
     volumes:
       - django_static:/app/staticfiles
       - django_media:/app/media
