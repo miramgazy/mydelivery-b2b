@@ -1,0 +1,17 @@
+node_modules
+dist
+.git
+.gitignore
+.env
+.env.local
+.env.*.local
+*.log
+.vscode
+.idea
+.agent
+frontend/node_modules
+frontend/dist
+backend/venv
+backend/__pycache__
+backend/staticfiles
+backend/media

@@ -91,10 +91,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       target: production
-      args:
-        - VITE_API_URL=${VITE_API_URL:-https://b2b-delivery.mevent.kz/api}
-        - VITE_TELEGRAM_BOT_USERNAME=${VITE_TELEGRAM_BOT_USERNAME}
-        - VITE_DEV_MODE=false
     restart: always
 
   nginx:
