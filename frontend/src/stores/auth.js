@@ -31,8 +31,6 @@ export const useAuthStore = defineStore('auth', () => {
             const telegramUser = telegramService.getUser()
             if (!telegramUser?.id) throw new Error('Нет ID Telegram')
 
-            alert(`FETCH: Старт запроса для ${telegramUser.id}...`)
-
             const response = await fetch('/api/users/check_access/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
