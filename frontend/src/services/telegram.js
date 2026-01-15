@@ -1,7 +1,15 @@
 
 class TelegramService {
     constructor() {
-        this.webApp = typeof window !== 'undefined' ? window.Telegram?.WebApp : null;
+        if (typeof window !== 'undefined') {
+            this.webApp = window.Telegram?.WebApp || null;
+            // Попробуем проинициализировать, если он есть
+            if (this.webApp) {
+                this.webApp.ready();
+            }
+        } else {
+            this.webApp = null;
+        }
     }
 
     /**

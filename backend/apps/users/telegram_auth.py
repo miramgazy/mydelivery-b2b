@@ -64,14 +64,10 @@ def validate_telegram_init_data(init_data):
 
     # Сравниваем хэши
     if calculated_hash != received_hash:
-        logger.warning(f"Hash mismatch. Calculated: {calculated_hash[:10]}... Received: {received_hash[:10]}...")
-        # raise TelegramAuthException("Неверная подпись данных") 
-        # TODO: Uncomment checks after debugging if needed, but for now we want to see why it fails
-        pass 
-        # Note: I am NOT disabling the check, I will re-enable it immediately if this was a permanent change, 
-        # but for debugging let's keep the check STRICT but LOG IT. 
-        # Actually, let's keep the logic STRICT but log it.
-        logger.error("Signature verification failed")
+        logger.warning(f"Hash mismatch!")
+        logger.warning(f"Calculated: {calculated_hash}")
+        logger.warning(f"Received: {received_hash}")
+        logger.warning(f"Using Bot Token: {settings.TELEGRAM_BOT_TOKEN[:5]}...{settings.TELEGRAM_BOT_TOKEN[-5:]}")
         raise TelegramAuthException("Неверная подпись данных")
 
     # Проверяем время (не старше 24 часов)

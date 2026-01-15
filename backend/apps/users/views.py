@@ -153,6 +153,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def check_access(self, request):
         """Проверка доступа пользователя по Telegram ID"""
         telegram_id = request.data.get('telegram_id')
+        logger.info(f"check_access called for telegram_id: {telegram_id}")
         
         if not telegram_id:
             return Response(
@@ -165,9 +166,8 @@ class UserViewSet(viewsets.ModelViewSet):
             )
         
         try:
-            print(f"DEBUG: check_access for telegram_id={telegram_id} (type={type(telegram_id)})")
             user = User.objects.get(telegram_id=telegram_id)
-            print(f"DEBUG: Found user {user.id}, is_active={user.is_active}")
+            logger.info(f"Found user in check_access: {user.id}, active: {user.is_active}")
             
             if not user.is_active:
                 return Response({
@@ -184,6 +184,7 @@ class UserViewSet(viewsets.ModelViewSet):
             })
             
         except User.DoesNotExist:
+            logger.info(f"User not found in check_access for ID: {telegram_id}")
             return Response({
                 'has_access': False,
                 'message': 'Вы не зарегистрированы в системе. Обратитесь к администратору для получения доступа.',
