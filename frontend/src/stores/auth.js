@@ -29,27 +29,31 @@ export const useAuthStore = defineStore('auth', () => {
 
         try {
             const telegramUser = telegramService.getUser()
+            if (!telegramUser?.id) throw new Error('Нет ID Telegram')
 
-            if (!telegramUser?.id) {
-                throw new Error('Не удалось получить данные Telegram пользователя')
+            alert(`FETCH: Старт запроса для ${telegramUser.id}...`)
+
+            const response = await fetch('/api/users/check_access/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: telegramUser.id })
+            })
+
+            alert(`FETCH: Статус ответа: ${response.status}`)
+
+            if (!response.ok) {
+                const text = await response.text()
+                throw new Error(`Ошибка сервера: ${response.status} - ${text}`)
             }
 
-            const result = await authService.checkAccess(telegramUser.id)
-            accessCheckResult.value = result
+            const result = await response.json()
+            alert(`FETCH: УСПЕХ! hasAccess=${result.has_access}`)
 
+            accessCheckResult.value = result
             return result
         } catch (err) {
-            console.error('Check access error:', err)
-            error.value = err.message
-            alert(`ОШИБКА API: ${err.message}\nСтатус: ${err.response?.status}\nURL: ${err.config?.url}`)
-
-            // Если ошибка - считаем что доступа нет
-            accessCheckResult.value = {
-                has_access: false,
-                message: 'Не удалось проверить доступ',
-                reason: 'error'
-            }
-
+            alert(`FETCH ERROR: ${err.message}`)
+            accessCheckResult.value = { has_access: false, message: err.message }
             return accessCheckResult.value
         } finally {
             loading.value = false
