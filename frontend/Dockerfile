@@ -3,19 +3,19 @@ FROM node:20-slim as build
 
 WORKDIR /app
 
-# Устанавливаем переменные для стабильности
-ENV NODE_ENV=production
-
 # Принимаем аргументы для Vite (Coolify передаст их автоматически)
 ARG VITE_API_URL
 ARG VITE_TELEGRAM_BOT_USERNAME
 ARG VITE_DEV_MODE=false
 
-# Копируем только файлы зависимостей для кеширования слоев
+# Копируем только файлы зависимостей
 COPY package*.json ./
 
-# Устанавливаем зависимости (используем npm ci для стабильности, если есть lock-file)
+# Устанавливаем ВСЕ зависимости (включая devDependencies для сборки)
 RUN npm install
+
+# Теперь можно установить NODE_ENV
+ENV NODE_ENV=production
 
 # Копируем остальные файлы и собираем
 COPY . .
