@@ -11,8 +11,8 @@ ARG VITE_DEV_MODE=false
 # Копируем только файлы зависимостей
 COPY package*.json ./
 
-# Устанавливаем ВСЕ зависимости (включая devDependencies для сборки)
-RUN npm install
+# Очистка и установка (защита от конфликтов платформ mac/linux)
+RUN rm -f package-lock.json && npm install
 
 # Теперь можно установить NODE_ENV
 ENV NODE_ENV=production
