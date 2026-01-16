@@ -117,7 +117,11 @@ router.beforeEach((to, from, next) => {
         // Если мы в Telegram, пускаем на главную (там сработает авто-вход)
         // Если не в Telegram, отправляем на страницу логина
         if (telegramService.isInTelegram()) {
-            next('/')
+            if (to.path === '/') {
+                next()
+            } else {
+                next('/')
+            }
         } else {
             next('/login')
         }

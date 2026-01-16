@@ -1,11 +1,18 @@
 <script setup>
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import telegramService from '@/services/telegram'
+import BottomNav from '@/components/common/BottomNav.vue'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
+
+// Скрывать навигацию на странице логина и в админке
+const showBottomNav = computed(() => {
+  return route.name !== 'login' && !route.path.startsWith('/admin')
+})
 
 onMounted(async () => {
   try {
@@ -32,6 +39,7 @@ onMounted(async () => {
 <template>
   <div class="app-container">
     <router-view></router-view>
+    <BottomNav v-if="showBottomNav" />
   </div>
 </template>
 
