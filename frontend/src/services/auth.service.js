@@ -7,15 +7,16 @@ class AuthService {
      */
     async checkAccess(telegramId) {
         try {
-            console.log('Sending check_access for:', telegramId)
+            console.log('API Request: check_access for', telegramId)
             const response = await api.post('/users/check_access/', {
                 telegram_id: telegramId
             }, {
                 skipAuth: true
             })
+            console.log('API Response: check_access success')
             return response.data
         } catch (error) {
-            alert(`Ошибка CheckAccess: ${error.message}`)
+            console.error('API Error: check_access', error.message)
             throw error
         }
     }

@@ -31,27 +31,14 @@ export const useAuthStore = defineStore('auth', () => {
             const telegramUser = telegramService.getUser()
             if (!telegramUser?.id) throw new Error('Нет ID Telegram')
 
-            console.log('Fetching check_access...');
-            const response = await fetch('/api/users/check_access/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegram_id: telegramUser.id })
-            })
-
-            console.log('CheckAccess status:', response.status);
-
-            if (!response.ok) {
-                const text = await response.text()
-                throw new Error(`Ошибка сервера: ${response.status} - ${text}`)
-            }
-
-            const result = await response.json()
-            console.log('CheckAccess success:', result);
+            console.log('Calling authService.checkAccess for id:', telegramUser.id);
+            const result = await authService.checkAccess(telegramUser.id);
+            console.log('CheckAccess result from service:', result);
 
             accessCheckResult.value = result
             return result
         } catch (err) {
-            console.error('CheckAccess error:', err);
+            console.error('CheckAccess error in store:', err);
             accessCheckResult.value = { has_access: false, message: err.message }
             return accessCheckResult.value
         } finally {
