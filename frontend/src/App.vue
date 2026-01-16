@@ -34,43 +34,30 @@ onMounted(async () => {
     }
     
     statusMessage.value = `ID: ${tgUser.id}. Проверка доступа...`;
-    console.log(`Sending check_access for user ${tgUser.id}...`);
+    console.log(`Calling authStore.checkAccess for user ${tgUser.id}...`);
 
-    const response = await fetch('/api/users/check_access/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ telegram_id: tgUser.id })
-    });
-    
-    console.log('Response status:', response.status);
+    // Используем уже настроенный Axios через Store
+    const result = await authStore.checkAccess();
+    console.log('Access result from store:', result);
 
-    if (response.ok) {
-        const result = await response.json();
-        console.log('Access result:', result);
+    if (result && result.has_access) {
+        statusMessage.value = 'ДОСТУП ЕСТЬ. Авторизация...';
+        console.log('Calling authStore.login()...');
+        const logRes = await authStore.login();
+        console.log('Login result:', logRes);
         
-        if (result.has_access) {
-            statusMessage.value = 'ДОСТУП ЕСТЬ. Авторизация...';
-            console.log('Calling authStore.login()...');
-            const logRes = await authStore.login();
-            console.log('Login result:', logRes);
-            
-            if (logRes.success) {
-                statusMessage.value = 'УСПЕХ. Загрузка приложения...';
-                router.push('/');
-                isCheckingAccess.value = false;
-            } else {
-                statusMessage.value = `ОШИБКА ЛОГИНА: ${logRes.message || 'Неизвестная ошибка'}`;
-                alert('Ошибка логина: ' + JSON.stringify(logRes));
-            }
+        if (logRes.success) {
+            statusMessage.value = 'УСПЕХ. Загрузка приложения...';
+            router.push('/');
+            isCheckingAccess.value = false;
         } else {
-            console.warn('Access denied by backend');
-            statusMessage.value = `ОТКАЗАНО: ${result.message || 'Доступ запрещен'}`;
+            statusMessage.value = `ОШИБКА ЛОГИНА: ${logRes.message || 'Неизвестная ошибка'}`;
+            alert('Ошибка логина: ' + JSON.stringify(logRes));
         }
     } else {
-        const errText = await response.text();
-        console.error('API Error text:', errText);
-        statusMessage.value = `ОШИБКА API: ${response.status}`;
-        alert(`API Error (${response.status}): ${errText}`);
+        console.warn('Access denied or error during check');
+        statusMessage.value = `ОТКАЗАНО: ${result?.message || 'Доступ запрещен'}`;
+        if (!result) alert('Ошибка: Бэкенд не вернул данных (результат пуст)');
     }
 
   } catch (err) {
