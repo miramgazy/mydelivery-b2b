@@ -15,7 +15,7 @@ const api = axios.create({
 // Interceptor для добавления токена
 api.interceptors.request.use(
     (config) => {
-        alert('AXIOS: Отправка запроса на ' + config.url)
+        console.log('AXIOS REQUEST: Sending to ' + config.url)
         const token = localStorage.getItem('access_token')
 
         if (token && !config.skipAuth) {
@@ -31,7 +31,7 @@ api.interceptors.request.use(
 // Interceptor для обработки ответов
 api.interceptors.response.use(
     (response) => {
-        alert(`AXIOS: Ответ получен от ${response.config.url}. Статус: ${response.status}`)
+        console.log(`AXIOS RESPONSE: Received from ${response.config.url}. Status: ${response.status}`)
         return response
     },
     async (error) => {

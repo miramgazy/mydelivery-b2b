@@ -31,13 +31,14 @@ export const useAuthStore = defineStore('auth', () => {
             const telegramUser = telegramService.getUser()
             if (!telegramUser?.id) throw new Error('Нет ID Telegram')
 
+            console.log('Fetching check_access...');
             const response = await fetch('/api/users/check_access/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ telegram_id: telegramUser.id })
             })
 
-            alert(`FETCH: Статус ответа: ${response.status}`)
+            console.log('CheckAccess status:', response.status);
 
             if (!response.ok) {
                 const text = await response.text()
@@ -45,12 +46,12 @@ export const useAuthStore = defineStore('auth', () => {
             }
 
             const result = await response.json()
-            alert(`FETCH: УСПЕХ! hasAccess=${result.has_access}`)
+            console.log('CheckAccess success:', result);
 
             accessCheckResult.value = result
             return result
         } catch (err) {
-            alert(`FETCH ERROR: ${err.message}`)
+            console.error('CheckAccess error:', err);
             accessCheckResult.value = { has_access: false, message: err.message }
             return accessCheckResult.value
         } finally {

@@ -52,18 +52,16 @@ onMounted(async () => {
             isCheckingAccess.value = false;
         } else {
             statusMessage.value = `ОШИБКА ЛОГИНА: ${logRes.message || 'Неизвестная ошибка'}`;
-            alert('Ошибка логина: ' + JSON.stringify(logRes));
+            console.error('Login error detail:', logRes);
         }
     } else {
         console.warn('Access denied or error during check');
         statusMessage.value = `ОТКАЗАНО: ${result?.message || 'Доступ запрещен'}`;
-        if (!result) alert('Ошибка: Бэкенд не вернул данных (результат пуст)');
     }
 
   } catch (err) {
     console.error('FATAL ERROR:', err);
     statusMessage.value = `КРИТИЧЕСКАЯ ОШИБКА: ${err.message}`;
-    alert('Fatal Error: ' + err.stack);
   }
 })
 </script>
