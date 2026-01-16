@@ -84,3 +84,4 @@ certbot/
 .output/
 .nuxt/
 dist/
+examples/
