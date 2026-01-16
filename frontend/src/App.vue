@@ -36,9 +36,12 @@ onMounted(async () => {
     statusMessage.value = `ID: ${tgUser.id}. Проверка доступа...`;
     console.log(`Calling authStore.checkAccess for user ${tgUser.id}...`);
 
-    // Принудительный таймаут для проверки (15 секунд)
+    statusMessage.value = `ID: ${tgUser.id}. Проверка доступа...`;
+    console.log(`Calling authStore.checkAccess for user ${tgUser.id}...`);
+
+    // Принудительный таймаут сокращен до 5 секунд
     const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Время ожидания сервера истекло (15с)')), 15000)
+        setTimeout(() => reject(new Error('Таймаут соединения (5с)')), 5000)
     );
 
     try {
@@ -53,14 +56,12 @@ onMounted(async () => {
             statusMessage.value = 'ДОСТУП ЕСТЬ. Авторизация...';
             console.log('Calling authStore.login()...');
             const logRes = await authStore.login();
-            console.log('Login result:', logRes);
-            
             if (logRes.success) {
                 statusMessage.value = 'УСПЕХ. Загрузка приложения...';
                 router.push('/');
                 isCheckingAccess.value = false;
             } else {
-                statusMessage.value = `ОШИБКА ЛОГИНА: ${logRes.message || 'Неизвестная ошибка'}`;
+                statusMessage.value = `ОШИБКА ЛОГИНА: ${logRes.message}`;
                 console.error('Login error detail:', logRes);
             }
         } else {
@@ -69,7 +70,8 @@ onMounted(async () => {
         }
     } catch (checkErr) {
         console.error('Check access failed:', checkErr);
-        statusMessage.value = `ОШИБКА: ${checkErr.message}`;
+        statusMessage.value = `ОШИБКА СЕТИ: ${checkErr.message}`;
+        // Можно добавить логику для кнопки "Повторить", если бы она была в UI
     }
 
   } catch (err) {
