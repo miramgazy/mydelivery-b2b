@@ -65,9 +65,16 @@ async function startApp() {
 
   } catch (err) {
     console.error('INIT ERROR:', err);
+    
+    // Если это не просто таймаут, а серьезная ошибка - чистим кэш
+    if (!err.message.includes('Таймаут')) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+    }
+    
     statusMessage.value = err.message;
     errorState.value = true;
-    isCheckingAccess.value = true; // Оставляем экран загрузки, но с кнопкой
+    isCheckingAccess.value = true; 
   }
 }
 
