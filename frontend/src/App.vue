@@ -22,7 +22,8 @@ async function startApp() {
     
     // 1. Инициализация Telegram с задержкой (Разогрев WebView)
     statusMessage.value = 'Подключение к Telegram...';
-    await new Promise(resolve => setTimeout(resolve, 500)); 
+    await new Promise(resolve => setTimeout(resolve, 100)); 
+    console.log('WebView warmed up (100ms)'); 
     
     console.log('Initializing telegram service...');
     telegramService.init()
